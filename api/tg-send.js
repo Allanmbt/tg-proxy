@@ -1,6 +1,5 @@
-// Vercel Serverless: /api/tg-send.js  (Node 18+)
-export default async function handler(req, res) {
-    // --- CORS ---
+// /api/tg-send.js  —— Node.js Serverless Function (CommonJS)
+module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', process.env.ALLOW_ORIGIN || '*');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
@@ -9,8 +8,7 @@ export default async function handler(req, res) {
     try {
         let text = '', chatId = '';
 
-        // 支持 JSON 与 x-www-form-urlencoded
-        if (req.headers['content-type']?.includes('application/json')) {
+        if ((req.headers['content-type'] || '').includes('application/json')) {
             const body = req.body || {};
             text = String(body.text ?? '');
             chatId = String(body.chat_id ?? process.env.TG_CHAT_ID ?? '');
@@ -43,4 +41,4 @@ export default async function handler(req, res) {
     } catch (e) {
         return res.status(200).json({ ok: false, error: e?.message || 'REQUEST_FAILED' });
     }
-}
+};
